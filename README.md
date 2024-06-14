@@ -1,4 +1,4 @@
-# ArangoDB & MongoDB Spark Datasource Demo
+# Spring boot service exposing REST API to submit Spark job on minikube cluster
 
 Run [**`TelosMLTask`**](src/main/java/com/telos/spark/TelosMLTask.java) as Spring boot application.
 
