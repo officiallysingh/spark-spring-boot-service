@@ -1,0 +1,101 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# Full reference for Standard Spring Boot properties is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+# set -Dspring.profiles.active=<dev|sit|int> as JVM argument to run in desired profile
+# If no profile is specified explicitly, application will fall back to default profile, which is "local"
+
+spring:
+  application:
+    name: spark-data-fetcher-service
+#  autoconfigure:
+#    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+  devtools:
+    add-properties: false
+    restart:
+      enabled: false
+      exclude: logs/*,application.log,*.log,*.log.*
+  main:
+    log-startup-info: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+    problemdetails:
+      enabled: true
+  threads:
+    virtual:
+      enabled: true
+  redis:
+    uri: ${REDIS_URI:localhost:6379}
+  kafka:
+#    bootstrap-servers: ${KAFKA_HOST:localhost:9092}
+    consumer:
+      bootstrap-servers: ${data-fetcher.kafka.kafka-bootstrap-servers}
+      group-id: data-fetcher-group
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      auto-offset-reset: earliest
+      properties:
+        max.poll.records: 1  # Ensures one message is fetched per poll
+    listener:
+      concurrency: 1  # Ensures single-threaded message processing
+    producer:
+      bootstrap-servers: ${data-fetcher.kafka.kafka-bootstrap-servers}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+#------------------------- Swagger configuration -------------------------
+springdoc:
+  show-actuator: true
+  group-configs:
+    -
+      group: actuator
+      display-name: Actuator
+      paths-to-match: /actuator/**
+    -
+      group: sparkjob
+      display-name: Spark Job
+      paths-to-match: /**/spark-jobs/**
+  swagger-ui:
+    syntaxHighlight:
+      activated: true
+
+#------------------------- Actuators configuration -------------------------
+# If not specified '/actuator' is taken as default. If specified must start with '/'
+#management.endpoints.web.base-path=/
+# Set it as "*", if you want to expose all actuator endpoints
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  observations:
+    key-values:
+      application: ${spring.application.name}
+
+server:
+  port: 8090
+  forward-headers-strategy: framework
+#    servlet:
+#        context-path: /api
+logging:
+  level:
+    ROOT: info
+    '[org.mongodb.driver]': warn
+debug: false
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+#------------------------- Spark configurations -------------------------

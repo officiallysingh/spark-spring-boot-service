@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-spring-boot-service-app
+  labels:
+    name: spark-spring-boot-service
+spec:
+  replicas: 1
+  progressDeadlineSeconds: 1200
+  revisionHistoryLimit: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      name: spark-spring-boot-service
+  template:
+    metadata:
+      labels:
+        name: spark-spring-boot-service
+    spec:
+      containers:
+        - name: spark-spring-boot-service
+          image: spark-spring-boot-service:0.0.1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8090
