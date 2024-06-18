@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -27,7 +27,7 @@ class SparkJobController {
         @ApiResponse(responseCode = "400", description = "Bad request"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
       })
-  @PostMapping
+  @GetMapping
   ResponseEntity<String> submitSparkJob() {
     this.sparkSubmitter.executeSparkSubmit();
     return ResponseEntity.accepted().body("Spark Job submitted successfully");

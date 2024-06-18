@@ -32,7 +32,8 @@ public class SparkSubmitter {
 
       // Set new environment variables or modify existing ones
       //      environment.put("MASTER_URL", "https://127.0.0.1:49891");
-      environment.put("MASTER_URL", "https://kubernetes.default.svc");
+//      environment.put("MASTER_URL", "https://kubernetes.default.svc");
+      environment.put("MASTER_URL", "https://10.166.235.66");
       environment.put("DEPLOY_MODE", "cluster");
       environment.put("JOB_CLASS_NAME", "com.ksoot.spark.SparkSpringCloudTask");
       environment.put("JOB_NAME", "spark-spring-cloud-task");
